@@ -1,0 +1,8 @@
+.password-description {
+  max-width: 400px;
+}
+@media screen and (max-width: 576px) {
+  .password-description {
+    max-width: 300px;
+  }
+}

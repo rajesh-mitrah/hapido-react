@@ -1,0 +1,1 @@
+export const COOKIES_EXPIRATION_DAYS = 14;

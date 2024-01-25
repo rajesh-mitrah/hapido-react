@@ -1,0 +1,17 @@
+.sign-up-screen {
+  .progress-bar {
+    width: 300px;
+  }
+  @media screen and (max-width: 992px) {
+    .title {
+      font-size: 20px;
+    }
+
+    .form {
+      max-width: 500px;
+      .input {
+        font-size: 10px;
+      }
+    }
+  }
+}

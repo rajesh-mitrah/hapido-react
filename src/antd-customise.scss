@@ -1,0 +1,22 @@
+/* For customize the ANTD library inbuilt CSS */
+.ant-select-selector {
+  cursor: pointer !important;
+}
+
+.header,
+.accountTab {
+  .anticon,
+  .ant-btn-icon {
+    @extend .d-flex;
+    @extend .justify-content-center;
+    @extend .align-items-center;
+    @extend .h-100;
+  }
+  .ant-form-item {
+    @extend .mb-0;
+  }
+}
+
+.ant-tabs-ink-bar {
+  display: none;
+}
