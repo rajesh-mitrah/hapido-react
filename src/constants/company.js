@@ -42,7 +42,9 @@ export const getTableColumns = handleSendRequest => {
                 okText="Yes"
                 cancelText="No"
               >
-                <Button type="primary">Send Request</Button>
+                <Button type="primary" disabled={status === 'send_request'}>
+                  {status === 'send_request' ? 'Pending approval' : 'Send Request'}
+                </Button>
               </Popconfirm>
             );
         }

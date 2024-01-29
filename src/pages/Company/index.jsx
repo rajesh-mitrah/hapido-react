@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useMemo, useCallback } from 'react';
 
 import DataGrid from 'components/DataGrid';
 import Title from 'components/Title';
@@ -7,13 +7,12 @@ import PageHeader from 'components/PageHeader';
 import { useGetCompanyList, useSendRequest } from 'services/query/company';
 import { useGetUserByID } from 'services/query/profile';
 
-const companiesData = [
-  { id: 1, companyName: 'Company A', size: 'Small', type: 'Type 1', industry: 'Industry 1', status: '' },
-  { id: 2, companyName: 'Company B', size: 'Medium', type: 'Type 2', industry: 'Industry 2', status: 'Accepted' }
-];
+// const companiesData = [
+//   { id: 1, companyName: 'Company A', size: 'Small', type: 'Type 1', industry: 'Industry 1', status: '' },
+//   { id: 2, companyName: 'Company B', size: 'Medium', type: 'Type 2', industry: 'Industry 2', status: 'Accepted' }
+// ];
 
 const CompanyList = () => {
-  // const [companies, setCompanies] = useState(companiesData);
   const requestMutation = useSendRequest();
   const loggedinUserId = localStorage.getItem('loggedinUserId');
 
@@ -28,8 +27,6 @@ const CompanyList = () => {
         request_company_id: record?.company_id,
         status: 'send_request'
       });
-      // const updatedCompanies = companies.map(c => (c.id === record.id ? { ...c, status: 'Pending' } : c));
-      // // setCompanies(updatedCompanies);
     },
     [userProfileData]
   );
@@ -38,16 +35,7 @@ const CompanyList = () => {
 
   return (
     <div>
-      <PageHeader
-        leftLayout={<Title>Company Details</Title>}
-        /* rightLayout={
-      <HeaderFilter
-        page='company
-        className={{ select: 'employees-select', multiSelect: 'employees-multi-select' }}
-      />
-    } */
-      />
-
+      <PageHeader leftLayout={<Title>Company Details</Title>} />
       <DataGrid columns={tableColumns} data={companyList?.data?.data || []} />
     </div>
   );

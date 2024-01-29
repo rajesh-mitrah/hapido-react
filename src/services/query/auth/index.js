@@ -1,11 +1,11 @@
 import { useContext } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
 import { COMPANY_PATH, LOGIN_PATH } from 'constants/route';
 import { AuthContext } from 'context/authContext';
 import { getUserData, loginUser, registerUser } from 'services/api/auth';
-import { setStorage } from 'services/storage';
+import { getStorage, setStorage } from 'services/storage';
 import notification from 'components/Notification';
 
 export const useLoginUser = () => {
@@ -38,13 +38,17 @@ export const useLoginUser = () => {
 };
 
 export const useRegister = () => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation(registerUser, {
     onSuccess: response => {
       if (response) {
         notification.success(response.message);
-        navigate(LOGIN_PATH);
+        if (!getStorage('loggedinUserId')) {
+          navigate(LOGIN_PATH);
+        }
       }
+      queryClient.refetchQueries('user');
     },
     onError: error => {
       notification.error(`Registration Failed : ${error.message}`);

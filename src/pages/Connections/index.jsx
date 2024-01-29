@@ -3,9 +3,9 @@ import { Button, Tabs } from 'antd';
 
 import Title from 'components/Title';
 import DataGrid from 'components/DataGrid';
-import { SENDREQUEST, CONNECTION_TABS, getTableColumns, connectionsData } from 'constants/connections';
-import { useGetCompanyList, useGetConnections, useRequestedData } from 'services/query/company';
-import { useGetAllConnectionData } from 'services/query/user';
+import { SENDREQUEST, CONNECTION_TABS, getTableColumns } from 'constants/connections';
+import { useGetSendList, useRequestedData, useUpdateStatus } from 'services/query/company';
+import { useGetUserByID } from 'services/query/profile';
 
 const TabLabel = ({ label, isSelected }) => (
   <>
@@ -21,22 +21,26 @@ const TabLabel = ({ label, isSelected }) => (
 const Connections = () => {
   const [activeTab, setActiveTab] = useState(SENDREQUEST);
 
-  const connectionsData = useGetConnections();
-  const companyList = useGetCompanyList();
-  const connectData = useGetAllConnectionData();
-  const receiveRequestData = useRequestedData();
-
-  // const sendRequestData = useMemo(() => companyList?.data?.filter((item) => connectionsData?.data?.some((i) => item.company_id == i.request_company_id)));
-
-  // const receiveRequestData = [
-  // ];
+  const loggedinUserId = localStorage.getItem('loggedinUserId');
+  const userProfileData = useGetUserByID(loggedinUserId);
+  const connectionsData = useGetSendList({ id: userProfileData?.data?.company_id });
+  const updateStatus = useUpdateStatus();
+  const receiveRequestData = useRequestedData({ id: userProfileData?.data?.company_id });
 
   const handleAccept = id => {
-    console.log('Accepted', id);
+    updateStatus.mutate({
+      company_id: id,
+      request_company_id: userProfileData?.data?.company_id,
+      status: 'Accepted'
+    });
   };
 
   const handleReject = id => {
-    console.log('Rejected', id);
+    updateStatus.mutate({
+      company_id: id,
+      request_company_id: userProfileData?.data?.company_id,
+      status: 'Rejected'
+    });
   };
 
   const tableColumns = useMemo(() => {
@@ -46,7 +50,7 @@ const Connections = () => {
   const handleTabChange = key => setActiveTab(key);
 
   const getData = () => {
-    return activeTab === SENDREQUEST ? companyList?.data?.data || [] : receiveRequestData?.data?.response || [];
+    return activeTab === SENDREQUEST ? connectionsData?.data?.data || [] : receiveRequestData?.data?.response || [];
   };
 
   return (

@@ -44,10 +44,16 @@ export const getTableColumns = (activeTab, handleAccept, handleReject) => {
       title: 'Actions',
       key: 'actions',
       render: (text, record) => (
-        <>
-          <Button onClick={() => handleAccept(record.id)}>Accept</Button>
-          <Button onClick={() => handleReject(record.id)}>Reject</Button>
-        </>
+        <div>
+          {['Accepted', 'Rejected'].includes(record.status) ? (
+            <div>{record.status}</div>
+          ) : (
+            <div className="d-flex w-50 justify-content-between">
+              <Button onClick={() => handleAccept(record.company_id)}>Accept</Button>
+              <Button onClick={() => handleReject(record.company_id)}>Reject</Button>
+            </div>
+          )}
+        </div>
       )
     });
   }
