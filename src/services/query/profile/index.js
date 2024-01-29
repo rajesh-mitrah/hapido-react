@@ -16,19 +16,19 @@ const useInvalidate = () => {
   return { invalidateEmployee };
 };
 
-export const useAddOrganization = setTriggerGet => {
-  const { invalidateEmployee } = useInvalidate();
+export const useAddOrganization = () => {
+  const queryClient = useQueryClient();
 
   return useMutation(addOrganization, {
-    onSuccess: response => {
-      if (response) {
-        notification.info(response.message);
-        invalidateEmployee();
-        setTriggerGet(true);
+    onSuccess: (response, variables, context) => {
+      notification.info(response.message);
+      queryClient.invalidateQueries('organization');
+      if (context?.setFormMode) {
+        context.setFormMode('update');
       }
     },
     onError: error => {
-      notification.error(`Update Failed : ${error.message}`);
+      notification.error(`Operation failed: ${error.message}`);
     }
   });
 };
@@ -63,7 +63,12 @@ export const useUpdateUserById = () => {
 };
 
 export const useGetOrganization = (params, trigger, triggerGet) => {
-  const query = useQuery(['organization', params, trigger, triggerGet], () => getOrganizationDetails(params));
+  const query = useQuery(['organization', params, trigger, triggerGet], () => getOrganizationDetails(params), {
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    staleTime: 0
+  });
   return query;
 };
 

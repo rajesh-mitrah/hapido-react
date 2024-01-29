@@ -5,7 +5,7 @@ export const getTableColumns = handleSendRequest => {
     {
       key: '1',
       title: 'Company Name',
-      dataIndex: 'companyName',
+      dataIndex: 'company_name',
       sorter: true,
       render: (name, record) => <div>{name}</div>
     },

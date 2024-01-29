@@ -6,27 +6,28 @@ const { Option } = Select;
 
 const OrganizationForm = ({ type, userData }) => {
   const [form] = Form.useForm();
+  const [formMode, setFormMode] = useState('create');
 
-  const [trigger, setTrigger] = useState(false);
-  const [triggerGet, setTriggerGet] = useState(false);
+  const userCompanyData = useGetOrganization(userData);
+  const companyMutation = useAddOrganization();
 
-  const userCompanyData = useGetOrganization(userData, trigger, triggerGet);
-  const companyMutation = useAddOrganization(setTriggerGet);
-
-  const updateMutation = useUpdateOrganization(setTrigger);
+  const updateMutation = useUpdateOrganization();
 
   useEffect(() => {
     if (userCompanyData?.data?.[0]?.company_id) {
       form.setFieldsValue(userCompanyData?.data?.[0]);
-      setTrigger(false);
+      setFormMode('update');
     }
   }, [userCompanyData, form]);
 
   const handleSubmit = formData => {
-    if (userCompanyData?.data?.[0]?.company_id) {
+    if (formMode === 'update') {
       updateMutation.mutate({ id: userCompanyData?.data?.[0]?.company_id, formData });
     } else {
-      companyMutation.mutate(formData);
+      companyMutation.mutate(formData, {
+        onSuccess: () => setFormMode('update'),
+        context: { setFormMode }
+      });
     }
   };
 
@@ -53,7 +54,7 @@ const OrganizationForm = ({ type, userData }) => {
         <Input />
       </Form.Item>
       <Button type="primary" htmlType="submit">
-        {userCompanyData?.data?.[0]?.company_id ? 'Update' : 'Create'}
+        {formMode === 'update' ? 'Update' : 'Create'}
       </Button>
     </Form>
   );

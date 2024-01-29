@@ -1,3 +1,5 @@
+import Button from 'components/Button';
+
 export const SENDREQUEST = 'SendRequest';
 export const RECEIVEREQUEST = 'ReceiveRequest';
 
@@ -12,12 +14,12 @@ export const CONNECTION_TABS = [
   }
 ];
 
-export const getTableColumns = () => {
-  return [
+export const getTableColumns = (activeTab, handleAccept, handleReject) => {
+  let columns = [
     {
       key: '1',
       title: 'Company Name',
-      dataIndex: 'companyName',
+      dataIndex: 'company_name',
       sorter: true,
       render: (name, record) => <div>{name}</div>
     },
@@ -28,8 +30,8 @@ export const getTableColumns = () => {
     },
     {
       key: '3',
-      title: 'location',
-      dataIndex: 'location'
+      title: 'Type',
+      dataIndex: 'type'
     },
     {
       key: '4',
@@ -37,6 +39,19 @@ export const getTableColumns = () => {
       dataIndex: 'industry'
     }
   ];
+  if (activeTab === RECEIVEREQUEST) {
+    columns.push({
+      title: 'Actions',
+      key: 'actions',
+      render: (text, record) => (
+        <>
+          <Button onClick={() => handleAccept(record.id)}>Accept</Button>
+          <Button onClick={() => handleReject(record.id)}>Reject</Button>
+        </>
+      )
+    });
+  }
+  return columns;
 };
 
 export const connectionsData = [

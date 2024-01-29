@@ -4,6 +4,8 @@ import DataGrid from 'components/DataGrid';
 import Title from 'components/Title';
 import { getTableColumns } from 'constants/company';
 import PageHeader from 'components/PageHeader';
+import { useGetCompanyList, useSendRequest } from 'services/query/company';
+import { useGetUserByID } from 'services/query/profile';
 
 const companiesData = [
   { id: 1, companyName: 'Company A', size: 'Small', type: 'Type 1', industry: 'Industry 1', status: '' },
@@ -11,14 +13,25 @@ const companiesData = [
 ];
 
 const CompanyList = () => {
-  const [companies, setCompanies] = useState(companiesData);
+  // const [companies, setCompanies] = useState(companiesData);
+  const requestMutation = useSendRequest();
+  const loggedinUserId = localStorage.getItem('loggedinUserId');
+
+  const companyList = useGetCompanyList();
+
+  const userProfileData = useGetUserByID(loggedinUserId);
 
   const handleSendRequest = useCallback(
     record => {
-      const updatedCompanies = companies.map(c => (c.id === record.id ? { ...c, status: 'Pending' } : c));
-      setCompanies(updatedCompanies);
+      requestMutation.mutate({
+        company_id: userProfileData?.data?.company_id,
+        request_company_id: record?.company_id,
+        status: 'send_request'
+      });
+      // const updatedCompanies = companies.map(c => (c.id === record.id ? { ...c, status: 'Pending' } : c));
+      // // setCompanies(updatedCompanies);
     },
-    [companies]
+    [userProfileData]
   );
 
   const tableColumns = useMemo(() => getTableColumns(handleSendRequest), [handleSendRequest]);
@@ -28,14 +41,14 @@ const CompanyList = () => {
       <PageHeader
         leftLayout={<Title>Company Details</Title>}
         /* rightLayout={
-        <HeaderFilter
-          page='company
-          className={{ select: 'employees-select', multiSelect: 'employees-multi-select' }}
-        />
-      } */
+      <HeaderFilter
+        page='company
+        className={{ select: 'employees-select', multiSelect: 'employees-multi-select' }}
+      />
+    } */
       />
 
-      <DataGrid columns={tableColumns} data={companies} />
+      <DataGrid columns={tableColumns} data={companyList?.data?.data || []} />
     </div>
   );
 };

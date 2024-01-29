@@ -7,9 +7,9 @@ import Content from 'components/Content';
 import Title from 'components/Title';
 import ProfileForm from 'components/Profile/ProfileForm';
 import OrganizationForm from 'components/Profile/OrganizationForm';
+import { useGetOrganization, useGetUserByID } from 'services/query/profile';
 
 import './index.scss';
-import { useGetOrganization, useGetUserByID } from 'services/query/profile';
 
 const TabLabel = ({ icon: Icon, label, isSelected }) => (
   <Button type={isSelected ? 'default' : 'text'} className={`d-flex align-items-center ${isSelected ? 'btn' : ''}`}>

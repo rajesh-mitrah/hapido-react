@@ -15,3 +15,7 @@ export const editUser = async mappingData => {
 export const getUserData = async () => {
   return await get('/user/get_all_users');
 };
+
+export const getConnectionData = async () => {
+  return await get('/connect/request_send');
+};
