@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 
 import { getLoggedInUser, deleteUser } from 'services/api/user';
-import { editUser, getUserData } from 'services/api/auth';
+import { editUser, fetchUsersData, getUserData } from 'services/api/auth';
 import { getStorage } from 'services/storage';
 import notification from 'components/Notification';
 
@@ -34,6 +34,18 @@ export const useUpdateQuery = () => {
     },
     onError: error => {
       notification.error(`Update Failed : ${error.message}`);
+    }
+  });
+};
+
+export const useFetchAllUsers = () => {
+  return useMutation('search', fetchUsersData, {
+    onSuccess: response => {
+      if (response) {
+      }
+    },
+    onError: error => {
+      notification.error(`Failed to fetch : ${error.message}`);
     }
   });
 };

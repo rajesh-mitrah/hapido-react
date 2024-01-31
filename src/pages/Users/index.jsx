@@ -1,19 +1,23 @@
 import React, { useState, useMemo } from 'react';
 import { Table, Button, Modal, Form, Input } from 'antd';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined } from '@ant-design/icons';
 import { useRegister } from 'services/query/auth';
 import CustomInput from 'components/Input';
 import { useGetUserByID } from 'services/query/profile';
-import { useDeleteQuery, useGetAllUserData } from 'services/query/user';
+import { useDeleteQuery, useFetchAllUsers, useGetAllUserData } from 'services/query/user';
+import Search from 'antd/es/input/Search';
 
 const UserManagement = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [search_terms, setSearch_terms] = useState('');
+
   const [form] = Form.useForm();
   const userData = useGetAllUserData();
   const loggedinUserId = localStorage.getItem('loggedinUserId');
   const userProfileData = useGetUserByID(loggedinUserId);
   const registerMutation = useRegister();
   const deleteQuery = useDeleteQuery();
+  const fetchAllUsersData = useFetchAllUsers();
 
   const allUserData = useMemo(
     () => userData?.data?.filter(item => item?.company_id == userProfileData.company_id),
@@ -35,6 +39,11 @@ const UserManagement = () => {
     setIsModalVisible(false);
     form.resetFields();
   };
+  const handleSearch = data => {
+    setSearch_terms(data);
+    fetchAllUsersData.mutate({ search_terms: data });
+  };
+
   const deleteUser = user => {
     Modal.confirm({
       title: 'Are you sure delete this user?',
@@ -80,9 +89,12 @@ const UserManagement = () => {
 
   return (
     <div>
-      <Button type="primary" onClick={showAddUserModal}>
-        Add User
-      </Button>
+      <div className="d-flex justify-content-between">
+        <Button type="primary" onClick={showAddUserModal}>
+          Add User
+        </Button>
+        <Search className="w-25" onSearch={handleSearch} />
+      </div>
       <Modal title={'Add User'} open={isModalVisible} onCancel={handleCancel} footer={null}>
         <Form form={form} layout="vertical" onFinish={handleAddOrEditUser}>
           <Form.Item name="first_name" label="First Name" rules={[{ required: true }]}>
@@ -124,7 +136,10 @@ const UserManagement = () => {
           </Button>
         </Form>
       </Modal>
-      <Table dataSource={allUserData} columns={columns} />
+      <Table
+        dataSource={search_terms !== '' ? fetchAllUsersData?.data?.response || [] : allUserData || []}
+        columns={columns}
+      />
     </div>
   );
 };

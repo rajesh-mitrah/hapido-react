@@ -15,3 +15,7 @@ export const editUser = async mappingData => {
 export const getUserData = async () => {
   return await get('/user/get_all_users');
 };
+
+export const fetchUsersData = async data => {
+  return await get(`/user/search?search_terms=${data?.search_terms}`);
+};

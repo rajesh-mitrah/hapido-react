@@ -3,7 +3,6 @@ import { useDeleteQuery } from 'services/query/user';
 
 const UserDeleteModal = ({ recordToDelete, type }) => {
   const useMutation = useDeleteQuery();
-  console.log('recordToDelete', recordToDelete);
 
   const handleOk = () => {
     const uid = recordToDelete.id;
